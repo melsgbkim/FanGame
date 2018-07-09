@@ -6,8 +6,11 @@ public class TDollControl : MonoBehaviour
     public string TDollName = "";
     public float MoveSpeed = 10f;
     public TDollAnimation animation;
+    public MoveFlag MoveFlagPrefab;
+    public GameObject bulletPrefab;
 
     Vector3 MoveTarget;
+    MoveFlag MoveFlagObj = null;
     Rigidbody rigidbody;
     bool nowMoving;
 
@@ -34,18 +37,44 @@ public class TDollControl : MonoBehaviour
         }
         animation.FlipX(vec.x < 0);
         rigidbody.MovePosition(transform.localPosition + vec.normalized * moveDistance);
-        print(rigidbody.velocity);
     }
 
     public void Update()
     {
-        if (nowMoving) animation.SetAniamtionName(TDollAnimation.MOVE);
-        else animation.SetAniamtionName(TDollAnimation.WAIT);
+        if (nowMoving)
+        {
+            animation.SetAniamtionName(TDollAnimation.MOVE);
+            if (MoveFlagObj == null)
+            {
+                MoveFlagObj = Instantiate(MoveFlagPrefab) as MoveFlag;
+                MoveFlagObj.SetDest(transform.localPosition, MoveTarget);
+            }
+            else
+            {
+                MoveFlagObj.SetDest(transform.localPosition, MoveTarget);
+            }
+        }
+        else
+        {
+            animation.SetAniamtionName(TDollAnimation.WAIT);
+            if (MoveFlagObj != null)
+            {
+                Destroy(MoveFlagObj.gameObject);
+                MoveFlagObj = null;
+            }
+        }
     }
 
     public void SetMoveTarget(Vector3 to)
     {
         MoveTarget = new Vector3(to.x, 0f, to.z);
         nowMoving = true;
+    }
+
+    public void ShotTo(Vector3 to)
+    {
+        Bullet obj = (Instantiate(bulletPrefab) as GameObject).GetComponent<Bullet>();
+        obj.SetBullet(transform.localPosition, to,50f);
+        obj.SetParentUnit(this);
     }
 }
