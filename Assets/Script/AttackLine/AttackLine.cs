@@ -9,6 +9,8 @@ public class AttackLine : MonoBehaviour
     public float LineSpeed;
     float LineProgress;
 
+    const float PosY = 0.5f;
+
     public void SetFrom(Vector3 from)
     {
         FromPos = from;
@@ -19,12 +21,12 @@ public class AttackLine : MonoBehaviour
         Line.transform.localPosition = vec * 0.5f;
         Line.transform.localScale = new Vector3(vec.magnitude, Line.transform.localScale.y, Line.transform.localScale.z);
         Line.transform.localRotation = Quaternion.Euler(90, -Mathf.Rad2Deg * (Mathf.Atan2((vec).z, (vec).x)), 0);// * Quaternion.Euler(90, 0, 0);
-        transform.localPosition = new Vector3(transform.localPosition.x, 1f, transform.localPosition.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, PosY, transform.localPosition.z);
     }
 
     public void SetDest(Vector3 from, Vector3 dest)
     {
-        dest = new Vector3(dest.x, 0f, dest.z);
+        dest = new Vector3(dest.x, PosY, dest.z);
         transform.localPosition = dest;
         SetFrom(from);
        

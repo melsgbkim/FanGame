@@ -8,6 +8,7 @@ public class TDollControl : MonoBehaviour
     public TDollAnimation animation;
     public MoveFlag MoveFlagPrefab;
     public GameObject bulletPrefab;
+    public float bulletSpeed = 10f;
 
     Vector3 MoveTarget;
     MoveFlag MoveFlagObj = null;
@@ -74,7 +75,7 @@ public class TDollControl : MonoBehaviour
     public void ShotTo(Vector3 to)
     {
         Bullet obj = (Instantiate(bulletPrefab) as GameObject).GetComponent<Bullet>();
-        obj.SetBullet(transform.localPosition, to,50f);
+        obj.SetBullet(transform.localPosition, to, bulletSpeed);
         obj.SetParentUnit(this);
     }
 }

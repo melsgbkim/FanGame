@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour
     TDollControl parentTDoll;
     public float lifeTime;
 
-    const float PosY = 1f;
+    const float PosY = 0.5f;
 
     public void Start()
     {
@@ -41,7 +41,7 @@ public class Bullet : MonoBehaviour
         Vector3 dest = transform.localPosition;
 
         Vector3 vec = rigidbody.velocity * Time.fixedDeltaTime;
-        LinePos.transform.localPosition = vec * 0.5f;
+        //LinePos.transform.localPosition = vec * 0.5f;
         LineScale.localScale = new Vector3(LineScale.localScale.x, vec.magnitude*0.5f, LineScale.localScale.z);
         LineRot.localRotation = Quaternion.Euler(0, -Mathf.Rad2Deg * (Mathf.Atan2((vec).z, (vec).x)), 0);// * Quaternion.Euler(90, 0, 0);
     }

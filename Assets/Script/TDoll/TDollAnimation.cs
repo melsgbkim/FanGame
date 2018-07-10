@@ -18,9 +18,6 @@ public class TDollAnimation : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Q)) motion.AnimationName = "move";
-        if (Input.GetKeyDown(KeyCode.W)) motion.AnimationName = "attack";
-        if (Input.GetKeyDown(KeyCode.E)) motion.AnimationName = "wait";
     }
 
     public void SetAniamtionName(string value)
