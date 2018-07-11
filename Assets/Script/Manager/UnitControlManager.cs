@@ -55,7 +55,9 @@ public class UnitControlManager : MonoBehaviour
             case "AttackWait":
                 {
                     Vector3 pos;
-                    if (Input.GetMouseButtonDown(0) && GetTerrianClickPoint(out pos)) { nowState = "Attacked"; TDollSelected.ShotTo(pos); return; }
+                    if (GetTerrianClickPoint(out pos) == false) return;
+                    if (TDollSelected != null) { TDollSelected.AimTo(pos); }
+                    if (Input.GetMouseButtonDown(0)) { nowState = "Attacked"; TDollSelected.ShotTo(pos); return; }
                 }
                 break;
             case "Attacked":

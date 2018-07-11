@@ -11,15 +11,21 @@ public class TDollControl : MonoBehaviour
     public float bulletSpeed = 10f;
 
     Vector3 MoveTarget;
+    Vector3 AimTarget;
+    Vector3 ShotTarget;
+
     MoveFlag MoveFlagObj = null;
     Rigidbody rigidbody;
-    bool nowMoving;
+    bool nowMoving = false;
+    bool nowAttackMotion = false;
 
     public void Start()
     {
         MoveTarget = transform.localPosition;
         rigidbody = GetComponent<Rigidbody>();
-        nowMoving = false;
+
+        animation.FireEvent = SpineEventFire;
+        animation.CompleteAttack = SpineCompleteAttack;
     }
 
     public void FixedUpdate()
@@ -36,8 +42,11 @@ public class TDollControl : MonoBehaviour
             moveDistance = vec.magnitude;
             nowMoving = false;
         }
-        animation.FlipX(vec.x < 0);
-        rigidbody.MovePosition(transform.localPosition + vec.normalized * moveDistance);
+        if (nowMoving)
+        {
+            animation.FlipX(vec.x < 0);
+            rigidbody.MovePosition(transform.localPosition + vec.normalized * moveDistance);
+        }
     }
 
     public void Update()
@@ -55,14 +64,23 @@ public class TDollControl : MonoBehaviour
                 MoveFlagObj.SetDest(transform.localPosition, MoveTarget);
             }
         }
+        else if(nowAttackMotion)
+        {
+            animation.FlipX((AimTarget.x - transform.localPosition.x) < 0);
+        }
         else
         {
             animation.SetAniamtionName(TDollAnimation.WAIT);
-            if (MoveFlagObj != null)
-            {
-                Destroy(MoveFlagObj.gameObject);
-                MoveFlagObj = null;
-            }
+            DestroyMoveFlag();
+        }
+    }
+
+    void DestroyMoveFlag()
+    {
+        if (MoveFlagObj != null)
+        {
+            Destroy(MoveFlagObj.gameObject);
+            MoveFlagObj = null;
         }
     }
 
@@ -72,10 +90,32 @@ public class TDollControl : MonoBehaviour
         nowMoving = true;
     }
 
+    public void AimTo(Vector3 to)
+    {
+        if(nowMoving)
+            MoveTarget = transform.localPosition;
+        AimTarget = to;
+        nowAttackMotion = true;
+        DestroyMoveFlag();
+        animation.SetAniamtionName(TDollAnimation.AIM);
+    }
+
     public void ShotTo(Vector3 to)
     {
+        ShotTarget = to;
+        animation.SetAniamtionName(TDollAnimation.ATTACK);
+        //animation.SetTimeScale(1);
+    }
+
+    public void SpineEventFire(Spine.Event e)
+    {
         Bullet obj = (Instantiate(bulletPrefab) as GameObject).GetComponent<Bullet>();
-        obj.SetBullet(transform.localPosition, to, bulletSpeed);
+        obj.SetBullet(transform.localPosition, ShotTarget, bulletSpeed);
         obj.SetParentUnit(this);
+    }
+
+    public void SpineCompleteAttack()
+    {
+        nowAttackMotion = false;
     }
 }
